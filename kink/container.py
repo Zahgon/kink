@@ -64,12 +64,7 @@ class Container:
             raise KeyError(f"Service {key} is not registered.")
 
     def add_alias(self, name: Union[str, Type], target: Union[str, Type]):
-        if List[target] in self._memoized_services:  # type: ignore
-            del self._memoized_services[List[target]]  # type: ignore
-
-        if name not in self._aliases:
-            self._aliases[name] = []
-        self._aliases[name].append(target)
+        pass
 
     @overload
     def __getitem__(self, key: str) -> Any: ...
@@ -107,19 +102,7 @@ class Container:
         raise ServiceError(f"Service {key} is not registered.")
 
     def _get(self, key: Union[str, Type]) -> Any:
-        if key in self._memoized_services:
-            return self._memoized_services[key]
-
-        if key not in self._services:
-            return _MISSING_SERVICE
-
-        value = self._services[key]
-
-        if isinstance(value, LambdaType) and value.__name__ == "<lambda>":
-            self._memoized_services[key] = value(self)
-            return self._memoized_services[key]
-
-        return value
+        pass
 
     def __contains__(self, key) -> bool:
         contains = key in self._services or key in self._factories or key in self._aliases
@@ -136,14 +119,14 @@ class Container:
         return False
 
     def _has_alias_list_for(self, key: Union[str, Type]) -> bool:
-        return hasattr(key, "__origin__") and hasattr(key, "__args__") and key.__origin__ == list and key.__args__[0] in self._aliases  # type: ignore
+        pass
 
     @property
     def factories(self) -> Dict[Union[str, Type], Callable[["Container"], Any]]:
-        return self._factories
+        pass
 
     def clear_cache(self) -> None:
-        self._memoized_services = {}
+        pass
 
 
 di: Container = Container()
